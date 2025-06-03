@@ -1,0 +1,129 @@
+<!-- @let error = userData?.error();
+<ul>
+  @for (user of userData.value(); track user.id) {
+    <li> {{user.username}} </li>
+    <div class="card flex justify-center">
+      <p-button [label]="user?.role" />
+    </div>
+
+  }
+</ul>
+
+
+@if(userData.error()) {
+  <p>Error loading users</p>
+} -->
+
+@if(userData.isLoading()) {
+<p>Loading users...</p>
+}
+<div class="card">
+  <p-dataview #dv [value]="userData.value()" [paginator]="true" [rows]="layout === 'list' ? 5 : 6" [totalRecords]="userData.value()?.length" [layout]="layout">
+    <ng-template #header>
+      <div class="flex justify-between">
+        <div class="flex items-center gap-2">
+         <h3>Users</h3>
+          <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="query.set(''); searchInput.value = ''" />
+          <p-iconfield iconPosition="left" class="ml-auto">
+            <p-inputicon>
+              <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input #searchInput pInputText type="text" (input)="query.set($any($event.target).value)"
+              placeholder="Search keyword" />
+          </p-iconfield>
+        </div>
+
+        <p-selectbutton [(ngModel)]="layout" [options]="options" [allowEmpty]="false">
+          <ng-template #item let-option>
+            <i [class]="option === 'list' ? 'pi pi-bars' : 'pi pi-table'"></i>
+          </ng-template>
+        </p-selectbutton>
+      </div>
+    </ng-template>
+    <ng-template #list let-items>
+      <div class="grid grid-cols-12 gap-4 grid-nogutter no-border">
+        <div class="col-span-12" *ngFor="let item of items; let first = first" class="col-span-12">
+          <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4"
+            [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !first }">
+            <div class="md:w-40 relative">
+              <img class="mx-auto rounded-border object-cover" width="100" height="100"
+                [src]="item.image" [alt]="item.name"/>
+              <p-tag [value]="item.inventoryStatus" [severity]="getSeverity(item)" class="absolute"
+                styleClass="dark:!bg-surface-900" [style.left.px]="4" [style.top.px]="4" />
+            </div>
+            <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6">
+              <div class="flex flex-row md:flex-col justify-between items-start gap-2">
+                <div>
+                  <span class="font-medium text-secondary text-sm">{{ item?.username || 'N/A' }}</span>
+                  <div class="text-lg font-medium text-surface-900 dark:text-surface-0 mt-2">{{ item?.firstName + ' ' + item?.lastName || 'N/A' }}</div>
+                </div>
+                <div class="bg-surface-100 dark:bg-surface-700 p-1" style="border-radius: 30px">
+                  <div class="bg-surface-0 dark:bg-surface-900 flex items-center gap-2 justify-center py-1 px-2"
+                    style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                    <span class="text-surface-900 dark:text-surface-0 font-medium text-sm">{{
+                      item.id || 'N/A'
+                      }}</span>
+                    <i class="pi pi-star-fill text-yellow-500"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col md:items-end gap-8">
+                <span class="text-xl font-semibold text-surface-900 dark:text-surface-0">{{
+                  '$' + item.phone
+                  }}</span>
+                <div class="flex flex-row-reverse md:flex-row gap-2">
+                  <p-button icon="pi pi-heart" [outlined]="true" />
+                  <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial whitespace-nowrap"
+                    label="Buy Now" [disabled]="item.eyeColor === 'Green'" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  <ng-template #grid let-items>
+    <div class="grid grid-cols-12 gap-4">
+      <div *ngFor="let product of items" class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2">
+        <div
+          class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded flex flex-col">
+          <div class="bg-surface-50 flex justify-center rounded p-4">
+            <div class="relative mx-auto">
+              <img class="rounded w-full"
+                [src]="product.image" [alt]="product.username"
+                style="max-width: 300px" />
+              <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.role)" class="absolute"
+                styleClass="dark:!bg-surface-900" [style.left.px]="4" [style.top.px]="4" />
+            </div>
+          </div>
+          <div class="pt-6">
+            <div class="flex flex-row justify-between products-start gap-2">
+              <div>
+                <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{
+                  product.role
+                  }}</span>
+                <div class="text-lg font-medium mt-1">{{ product.username }}</div>
+              </div>
+              <div class="bg-surface-100 p-1" style="border-radius: 30px; height:100%">
+                <div class="bg-surface-0 flex products-center gap-2 justify-center py-1 px-2"
+                  style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                  <span class="text-surface-900 font-medium text-sm">{{ product.id }}</span>
+                  <i class="pi pi-star-fill text-yellow-500"></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-6 mt-6">
+              <span class="text-2xl font-semibold">{{ product.phone }}</span>
+              <div class="flex gap-2">
+                <button pButton icon="pi pi-shopping-cart" label="Buy Now"
+                  [disabled]="product.role === 'admin'" class="flex-auto whitespace-nowrap"></button>
+                <button pButton icon="pi pi-heart" outlined></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  </p-dataview>
+</div>
