@@ -1,0 +1,86 @@
+{
+  "control":[
+    {
+      "name": "name",
+      "label": "Name",
+      "id": 1,
+      "placeholder": "Enter Name to proceed",
+      "nextElement": [],
+      "dynamicNextElement": [
+        {
+          "id":2,
+          "condition": [
+            {"name": "name", "value": "Ansari" }
+          ],
+          "nextElement": [ "last_name" ]
+        }
+      ],
+      "type": "text",
+      "required": true,
+      "validation": [{
+        "required": true,
+        "minlength": 3,
+        "maxlength": 50
+      }],
+      "errorMessage": {
+        "required": "Name is required",
+        "minlength": "Name must be at least 3 characters long",
+        "maxlength": "Name cannot exceed 50 characters"
+      },
+      "value": "",
+      "disabled": false,
+      "hidden": false,
+      "readonly": false,
+      "class": "form-control",
+      "addDynamically": false
+    },
+    {
+      "name": "last_name",
+      "label": "Last Name",
+      "id": 2,
+      "placeholder": "Enter Last Name to proceed",
+      "nextElement": [ "age" ],
+      "dynamicNextElement": [],
+      "type": "text",
+      "required": true,
+      "validation": [
+        {
+          "required": true
+        }
+      ],
+      "errorMessage": {
+        "required": "Last Name is required"
+      },
+      "value": "",
+      "disabled": false,
+      "hidden": false,
+      "readonly": false,
+      "class": "form-control",
+      "addDynamically": true
+    },
+    {
+      "name": "age",
+      "label": "Age",
+      "id": 3,
+      "placeholder": "Enter Age",
+      "nextElement": [],
+      "dynamicNextElement": [],
+      "type": "number",
+      "required": true,
+      "validation": [
+        {
+          "required": true
+        }
+      ],
+      "errorMessage": {
+        "required": "Age Name is required"
+      },
+      "value": "",
+      "disabled": false,
+      "hidden": false,
+      "readonly": false,
+      "class": "form-control",
+      "addDynamically": true
+    }
+  ]
+}

@@ -17,7 +17,7 @@
 @if(userData.isLoading()) {
 <p>Loading users...</p>
 }
-<div class="card">
+<!-- <div class="card">
   <p-dataview #dv [value]="userData.value()" [paginator]="true" [rows]="layout === 'list' ? 5 : 6" [totalRecords]="userData.value()?.length" [layout]="layout">
     <ng-template #header>
       <div class="flex justify-between">
@@ -126,4 +126,8 @@
     </div>
   </ng-template>
   </p-dataview>
+</div> -->
+
+<div class="card">
+  <app-form-element [formControlArray]="formControlArray()"></app-form-element>
 </div>

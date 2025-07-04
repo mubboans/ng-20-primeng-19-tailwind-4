@@ -1,25 +1,32 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, resource } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, resource, signal } from '@angular/core';
+import { Observable, of, tap } from 'rxjs';
+import { IFormControl } from '../interface/form.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResourceService {
 
+  private formControlArray = signal<IFormControl[]>([]);
   constructor(public http:HttpClient) { }
 
   getUsers(query: string): Observable<any> {
     return this.http.get(`https://dummyjson.com/users/search?q=${query}`);
   }
 
-  fnResource(obj: any){
-    resource({
-     loader: () => obj.loaderFn,
-    //  request: (req: any) => obj.requestFn(req),
-    //  update: (res : any) => obj.updateFn(res),
-    //  error: (err: any) => obj.errorFn(err)
-  })
-}
+  fnGetFormControlArray(): Observable<any> {
+    return this.http.get('master-form.json').pipe(
+      tap((res: any) => {
+        this.formControlArray.set(res);
+      })
+    );
+  }
+
+  fnGetReturnSpecificFormControl(name: string): IFormControl {
+    return this.formControlArray().find(c => c.name === name)!;
+  }
+
+  
 
 }

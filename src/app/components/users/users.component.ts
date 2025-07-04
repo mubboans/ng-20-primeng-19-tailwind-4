@@ -10,9 +10,11 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { SelectButton } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { FormElementComponent } from "../form-element/form-element.component";
+import { IFormControl } from '../../interface/form.interface';
 @Component({
   selector: 'app-users',
-  imports: [CommonModule, ButtonModule, DataViewModule, Tag, InputTextModule, IconFieldModule, InputIconModule, SelectButton, FormsModule],
+  imports: [CommonModule, ButtonModule, DataViewModule, Tag, InputTextModule, IconFieldModule, InputIconModule, SelectButton, FormsModule, FormElementComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,11 +26,10 @@ export class UsersComponent {
     request: ()=>  this.query(),
     loader:async ({request}) => {
       const response = await this.resourceService.getUsers(request?.toString() || '').toPromise();
-      console.log(response);
       return response.users as IUser[];
     },
   });
-  getSeverity(status: string): 'success' | 'danger' | 'warning' | 'info' {
+  public getSeverity(status: string): 'success' | 'danger' | 'warning' | 'info' {
     switch (status) {
       case 'admin':
         return 'success';
@@ -42,6 +43,15 @@ export class UsersComponent {
         return 'info';
     }
   }
+  public formControlArray = signal<IFormControl[]>([]);
   public options: string[] = ['list', 'grid'];
   public layout: 'grid' | 'list' = 'grid';
+  constructor(){
+    effect(()=>{
+      this.resourceService.fnGetFormControlArray().subscribe((res)=>{
+        const resFormControls = res?.control?.filter((x: IFormControl)=> !x.addDynamically);
+        this.formControlArray.set(resFormControls as IFormControl[]);
+      })
+    })
+  }
 }
